@@ -75,3 +75,4 @@ __pycache__/
 # Ignorar carpetas de IDEs (opcional pero recomendado)
 .vscode/
 ```# odoo_dev_SergioB
+# odoo_dev_SergioB
