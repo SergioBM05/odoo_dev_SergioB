@@ -1,0 +1,56 @@
+<odoo>
+  <data>
+  <!-- Vista de Lista -->
+<record model="ir.ui.view" id="tareas_list">
+    <field name="name">gestion_tareas_sergio.tareas_sergio.list</field>
+    <field name="model">gestion_tareas_sergio.tareas_sergio</field>
+    <field name="arch" type="xml">
+        <list>
+            <field name="nombre"/>
+            <field name="descripcion"/>
+            <field name="finalizado"/>
+        </list>
+    </field>
+</record>
+
+<!-- Vista de Formulario -->
+<record model="ir.ui.view" id="tareas_form">
+    <field name="name">gestion_tareas_sergio.tareas_sergio.form</field>
+    <field name="model">gestion_tareas_sergio.tareas_sergio</field>
+    <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <group>
+                    <field name="nombre"/>
+                    <field name="descripcion"/>
+                    <field name="fecha_creacion"/>
+                    <field name="fecha_ini"/>
+                    <field name="fecha_fin"/>
+                    <field name="finalizado"/>
+                    <field name="sprint"/>
+                    <field name="rel_tecnologias" widget="many2many_tags"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+  <record model="ir.actions.act_window" id="gestion_tareas_sergio.action_window">
+    <field name="name">Gestión de Tareas</field>
+    <field name="res_model">gestion_tareas_sergio.tareas_sergio</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- Top menu item -->
+  <menuitem name="Gestión Tareas Sergio" id="gestion_tareas_sergio.menu_root"/>
+
+  <!-- menu categories -->
+  <menuitem name="Gestión" id="gestion_tareas_sergio.gestion" 
+            parent="gestion_tareas_sergio.menu_root"/>
+
+  <!-- actions -->
+  <menuitem name="Tareas" id="gestion_tareas_sergio.gestion_tareas" 
+            parent="gestion_tareas_sergio.gestion"
+            action="gestion_tareas_sergio.action_window"/>
+  </data>
+</odoo>

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_gestion_tareas_sergio_tareas_sergio,acceso_tareas_sergio,model_gestion_tareas_sergio_tareas_sergio,base.group_user,1,1,1,1
+access_gestion_tareas_sergio_sprints_sergio,acceso_sprints_sergio,model_gestion_tareas_sergio_sprints_sergio,base.group_user,1,1,1,1
+access_gestion_tareas_sergio_tecnologias_sergio,acceso_tecnologias_sergio,model_gestion_tareas_sergio_tecnologias_sergio,base.group_user,1,1,1,1

@@ -1,0 +1,66 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="restaurante_sergio.list">
+      <field name="name">Lista de platos</field>
+      <field name="model">restaurante_sergio.platos_sergio</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="categoria"/>
+          <field name="precio"/>
+          <field name="disponible"/>
+        </list>
+      </field>
+    </record>
+
+<!-- Vista de Formulario -->
+<record model="ir.ui.view" id="restaurante_sergio.form">
+    <field name="name">restaurante_sergio.platos_sergio.form</field>
+    <field name="model">restaurante_sergio.platos_sergio</field>
+    <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <group>
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="precio"/>
+                    <field name="tiempo_preparacion"/>
+                    <field name="disponible"/>
+                    <field name="categoria"/>
+                    <field name="menu_id"/>
+                    <field name="rel_ingredientes" widget="many2many_tags"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+    <record model="ir.actions.act_window" id="restaurante_sergio.action_platos">
+      <field name="name">Gestión de platos</field>
+      <field name="res_model">restaurante_sergio.platos_sergio</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+     <record model="ir.actions.act_window" id="restaurante_sergio.action_menus">
+      <field name="name">Gestión de menús</field>
+      <field name="res_model">restaurante_sergio.menu_sergio</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem name="Gestión restaurante" id="restaurante_sergio.menu_root"/>
+
+    
+    <menuitem name="Platos y menú" id="restaurante_sergio.menu"
+              parent="restaurante_sergio.menu_root"/>
+
+    <menuitem name="Listado Platos" id="restaurante_sergio.menu_platos"
+              parent="restaurante_sergio.menu"
+              action="restaurante_sergio.action_platos"/>
+
+    <menuitem name="Listado Menús" id="restaurante_sergio.menu_menus"
+              parent="restaurante_sergio.menu"
+              action="restaurante_sergio.action_menus"/>
+
+  </data>
+</odoo>
