@@ -9,6 +9,7 @@
             <field name="nombre"/>
             <field name="descripcion"/>
             <field name="finalizado"/>
+            <field name="codigo"/>
         </list>
     </field>
 </record>
@@ -27,6 +28,7 @@
                     <field name="fecha_ini"/>
                     <field name="fecha_fin"/>
                     <field name="finalizado"/>
+                    <field name="codigo"/>
                     <field name="sprint"/>
                     <field name="rel_tecnologias" widget="many2many_tags"/>
                 </group>

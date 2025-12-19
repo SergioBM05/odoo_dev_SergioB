@@ -1,8 +1,12 @@
+from datetime import timedelta
 from odoo import models, fields, api
 
 class tareas_sergio(models.Model):
     _name = 'gestion_tareas_sergio.tareas_sergio'
     _description = 'Modelo de Tareas para Gestión de Proyectos'
+    
+    # En el modelo tareas_sergio
+    codigo = fields.Char(compute="_get_codigo")
 
     nombre = fields.Char(
         string="Nombre", 
@@ -44,33 +48,37 @@ class tareas_sergio(models.Model):
     column2='rel_tecnologias',
     string='Tecnologías')
     
+    def _get_codigo(self):
+        for tarea in self:
+        # Si la tarea no tiene un sprint asignado
+         if not tarea.sprint:
+                tarea.codigo = "TSK_" + str(tarea.id)
+         else:
+            # Si tiene sprint, usamos su nombre
+                tarea.codigo = str(tarea.sprint.nombre).upper() + "_" + str(tarea.id)
+    
 class sprints_sergio(models.Model):
     _name = 'gestion_tareas_sergio.sprints_sergio'
     _description = 'Modelo de Sprints para Gestión de Proyectos'
 
-    name = fields.Char(
-        string="Nombre", 
-        required=True, 
-        help="Introduzca el nombre del sprint")
-
-    descripcion = fields.Text(
-        string="Descripción", 
-        help="Breve descripción del sprint")
-
-    fecha_ini = fields.Datetime(
-        string="Fecha Inicio", 
-        required=True, 
-        help="Fecha y hora de inicio del sprint")
+    nombre = fields.Char(string="Nombre", required=True)
+    fecha_ini = fields.Datetime(string="Fecha Inicio", required=True)
+    duracion = fields.Integer(
+        string="Duración", 
+        help="Cantidad de días que tiene asignado el sprint")
 
     fecha_fin = fields.Datetime(
-        string="Fecha Final", 
-        help="Fecha y hora de finalización del sprint")
-    
-    tareas = fields.One2many(
-    'gestion_tareas_sergio.tareas_sergio', 
-    'sprint', 
-    string='Tareas del Sprint')
-    
+        compute='_compute_fecha_fin', 
+        store=True,
+        string="Fecha Fin")
+
+    @api.depends('fecha_ini', 'duracion')
+    def _compute_fecha_fin(self):
+        for sprint in self:
+            if sprint.fecha_ini and sprint.duracion and sprint.duracion > 0:
+                sprint.fecha_fin = sprint.fecha_ini + timedelta(days=sprint.duracion)
+            else:
+                sprint.fecha_fin = sprint.fecha_ini
 class tecnologias_sergio(models.Model):
     _name = 'gestion_tareas_sergio.tecnologias_sergio'
     _description = 'Modelo de Tecnologías'
