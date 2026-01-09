@@ -1,5 +1,10 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError, UserError
+import logging
 
+_logger = logging.getLogger(__name__)
+
+# MODELO PLATOS SERGIO ****************
 
 class PlatosSergio(models.Model):
     _name = 'restaurante_sergio.platos_sergio'
@@ -72,18 +77,43 @@ class PlatosSergio(models.Model):
     )
 
 
-
+    #METODOS ****************
     def _get_codigo(self):
         for plato in self:
-            if plato.categoria:
-                plato.codigo = f"{plato.categoria[:3].upper()}_{plato.id}"
-            else:
-                plato.codigo = f"PLT_{plato.id}"
+            try:
+                if not plato.categoria:
+                    _logger.warning(f"El plato {plato.name} no tiene categoría asignada.")
+                    plato.codigo = f"PLT_{plato.id}"
+                else:
+                    plato.codigo = f"{plato.categoria[:3].upper()}_{plato.id}"
+                    _logger.debug(f"Código asignado: {plato.codigo}")
+            except Exception as e:
+                raise ValidationError(f"Error al generar el código del plato: {str(e)}")
+
 
     def _compute_precio_con_iva(self):
         for plato in self:
             plato.precio_con_iva = plato.precio * 1.10 if plato.precio else 0.0
+            
+    
+    
+    #CONSTRAINTS ****************
+    @api.constrains('tiempo_preparacion')
+    def _check_tiempo_preparacion(self):
+        for plato in self:
+            if plato.tiempo_preparacion:
+                if plato.tiempo_preparacion < 1 or plato.tiempo_preparacion > 240:
+                 raise ValidationError("El tiempo de preparación no puede ser mayor a 4 Horas.")
+             
+    @api.constrains('precio')
+    def _check_precio_positivo(self):
+        for plato in self:
+            if plato.precio <= 0:
+                raise ValidationError("El precio del plato no puede ser negativo.")
+            else:
+                _logger.debug(f"Precio del plato {plato.name} es correcto: {plato.precio} euros.")
 
+    #DEPENDS ****************
     @api.depends('precio', 'descuento')
     def _compute_precio_final(self):
         for plato in self:
@@ -95,7 +125,7 @@ class PlatosSergio(models.Model):
 
 
 
-
+#MODELO MENÚS SERGIO ****************
 class Menu(models.Model):
     _name = 'restaurante_sergio.menu_sergio'
     _description = 'Modelo de Menús para Gestión de Restaurante'
@@ -135,6 +165,23 @@ class Menu(models.Model):
         store=True
     )
 
+#CONSTRAINS ****************
+    @api.constrains('fecha_ini', 'fecha_fin')
+    def _check_fechas_menu(self):
+        for menu in self:
+            if menu.fecha_fin:
+                if menu.fecha_fin < menu.fecha_ini:
+                    raise ValidationError("La fecha final no puede ser anterior a la fecha de inicio.")
+                
+    @api.constrains('platos', 'activo')
+    def _check_platos_activo(self):
+        for menu in self:
+            if menu.activo and not menu.platos:
+                raise ValidationError("Un menú activo debe tener al menos un plato asociado.")
+
+
+
+#DEPENDS ****************
     @api.depends('platos', 'platos.precio_final')
     def _compute_precio_total(self):
         for menu in self:
