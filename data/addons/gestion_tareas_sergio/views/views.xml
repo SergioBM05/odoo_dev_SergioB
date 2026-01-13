@@ -1,58 +1,236 @@
 <odoo>
   <data>
-  <!-- Vista de Lista -->
-<record model="ir.ui.view" id="tareas_list">
-    <field name="name">gestion_tareas_sergio.tareas_sergio.list</field>
-    <field name="model">gestion_tareas_sergio.tareas_sergio</field>
-    <field name="arch" type="xml">
+    <!-- ==================== TAREAS ==================== -->
+    <!--VISTA-->
+    <record model="ir.ui.view" id="gestion_tareas_sergio_list">
+      <field name="name">gestion_tareas_sergio.list</field>
+      <field name="model">gestion_tareas_sergio.tareas_sergio</field>
+      <field name="arch" type="xml">
         <list>
-            <field name="nombre"/>
-            <field name="descripcion"/>
-            <field name="finalizado"/>
-            <field name="codigo"/>
+          <field name="name"/>
+          <field name="codigo"/>
+          <field name="descripcion"/>
+          <field name="finalizado"/>
+          <field name="sprint"/>
+          <field name="rel_tecnologias" widget="many2many_tags"/>
         </list>
-    </field>
-</record>
+      </field>
+    </record>
 
-<!-- Vista de Formulario -->
-<record model="ir.ui.view" id="tareas_form">
-    <field name="name">gestion_tareas_sergio.tareas_sergio.form</field>
-    <field name="model">gestion_tareas_sergio.tareas_sergio</field>
-    <field name="arch" type="xml">
+    <!-- FORMULARIO-->
+    <record model="ir.ui.view" id="gestion_tareas_sergio_form">
+      <field name="name">gestion_tareas_sergio.form</field>
+      <field name="model">gestion_tareas_sergio.tareas_sergio</field>
+      <field name="arch" type="xml">
         <form>
-            <sheet>
-                <group>
-                    <field name="nombre"/>
-                    <field name="descripcion"/>
-                    <field name="fecha_creacion"/>
-                    <field name="fecha_ini"/>
-                    <field name="fecha_fin"/>
-                    <field name="finalizado"/>
-                    <field name="codigo"/>
-                    <field name="sprint"/>
-                    <field name="rel_tecnologias" widget="many2many_tags"/>
-                </group>
-            </sheet>
+          <sheet>
+            <group>
+              <group string="Información">
+                <field name="name"/>
+                <field name="descripcion"/>
+                <field name="codigo"/>
+                <field name="historia"/>
+              </group>
+              <group string="Fechas">
+                <field name="fecha_creacion"/>
+                <field name="fecha_ini"/>
+                <field name="fecha_fin"/>
+              </group>
+            </group>
+            <group>
+              <group string="Estado">
+                <field name="finalizado"/>
+              </group>
+              <group string="Relaciones">
+                <field name="sprint"/>
+                <field name="rel_tecnologias" widget="many2many_tags"/>
+              </group>
+            </group>
+          </sheet>
         </form>
-    </field>
-</record>
+      </field>
+    </record>
 
-  <record model="ir.actions.act_window" id="gestion_tareas_sergio.action_window">
-    <field name="name">Gestión de Tareas</field>
-    <field name="res_model">gestion_tareas_sergio.tareas_sergio</field>
-    <field name="view_mode">list,form</field>
-  </record>
+    <record model="ir.actions.act_window" id="gestion_tareas_sergio_action_window">
+      <field name="name">Tareas</field>
+      <field name="res_model">gestion_tareas_sergio.tareas_sergio</field>
+      <field name="view_mode">list,form</field>
+    </record>
 
-  <!-- Top menu item -->
-  <menuitem name="Gestión Tareas Sergio" id="gestion_tareas_sergio.menu_root"/>
+    <!-- ==================== SPRINTS ==================== -->
+    <record model="ir.ui.view" id="gestion_tareas_sergio_sprint_list">
+      <field name="name">gestion_tareas_sergio.sprint.list</field>
+      <field name="model">gestion_tareas_sergio.sprints_sergio</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="descripcion"/>
+          <field name="fecha_ini"/>
+          <field name="fecha_fin"/>
+          <field name="proyecto"/>
+        </list>
+      </field>
+    </record>
 
-  <!-- menu categories -->
-  <menuitem name="Gestión" id="gestion_tareas_sergio.gestion" 
-            parent="gestion_tareas_sergio.menu_root"/>
+    <record model="ir.ui.view" id="gestion_tareas_sergio_sprint_form">
+      <field name="name">gestion_tareas_sergio.sprint.form</field>
+      <field name="model">gestion_tareas_sergio.sprints_sergio</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <group string="Información">
+                <field name="name"/>
+                <field name="descripcion"/>
+                <field name="proyecto"/>
+              </group>
+              <group string="Fechas">
+                <field name="fecha_ini"/>
+                <field name="duracion"/>
+                <field name="fecha_fin"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="Tareas">
+                <field name="tareas">
+                  <list>
+                    <field name="name"/>
+                    <field name="finalizado"/>
+                  </list>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
 
-  <!-- actions -->
-  <menuitem name="Tareas" id="gestion_tareas_sergio.gestion_tareas" 
-            parent="gestion_tareas_sergio.gestion"
-            action="gestion_tareas_sergio.action_window"/>
+    <record model="ir.actions.act_window" id="gestion_tareas_sergio_sprint_action_window">
+      <field name="name">Sprints</field>
+      <field name="res_model">gestion_tareas_sergio.sprints_sergio</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ==================== TECNOLOGÍAS ==================== -->
+    <record model="ir.ui.view" id="gestion_tareas_sergio_tecnologia_list">
+      <field name="name">gestion_tareas_sergio.tecnologia.list</field>
+      <field name="model">gestion_tareas_sergio.tecnologias_sergio</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="descripcion"/>
+        </list>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="gestion_tareas_sergio_tecnologia_form">
+      <field name="name">gestion_tareas_sergio.tecnologia.form</field>
+      <field name="model">gestion_tareas_sergio.tecnologias_sergio</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <field name="logo" widget="image" class="oe_avatar"/>
+            <group>
+              <field name="name"/>
+              <field name="descripcion"/>
+            </group>
+            <notebook>
+              <page string="Tareas">
+                <field name="rel_tareas" widget="many2many_tags"/>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="gestion_tareas_sergio_tecnologia_action_window">
+      <field name="name">Tecnologías</field>
+      <field name="res_model">gestion_tareas_sergio.tecnologias_sergio</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <!--====================================HISTORIAS===================================== -->
+    <record model="ir.ui.view" id="gestion_tareas_sergio_historias_list">
+      <field name="name">gestion_tareas_sergio.historias.list</field>
+      <field name="model">gestion_tareas_sergio.historias_sergio</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="descripcion"/>
+          <field name="proyecto"/>
+          <field name="tareas"/>
+        </list>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="gestion_tareas_sergio_historias_form">
+      <field name="name">gestion_tareas_sergio.historias.form</field>
+      <field name="model">gestion_tareas_sergio.historias_sergio</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <field name="name"/>
+              <field name="descripcion"/>
+              <field name="proyecto"/>
+              <field name="tareas"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="gestion_tareas_sergio_historias_action_window">
+      <field name="name">Historias</field>
+      <field name="res_model">gestion_tareas_sergio.historias_sergio</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <!--====================================PROYECTOS===================================== -->
+    <record model="ir.ui.view" id="gestion_tareas_sergio_proyectos_list">
+      <field name="name">gestion_tareas_sergio.proyectos.list</field>
+      <field name="model">gestion_tareas_sergio.proyectos_sergio</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="descripcion"/>
+          <field name="historias"/>
+          <field name="sprints"/>
+        </list>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="gestion_tareas_sergio_proyectos_form">
+      <field name="name">gestion_tareas_sergio.proyectos.form</field>
+      <field name="model">gestion_tareas_sergio.proyectos_sergio</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <field name="name"/>
+              <field name="descripcion"/>
+              <field name="historias"/>
+              <field name="sprints"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="gestion_tareas_sergio_proyectos_action_window">
+      <field name="name">Proyectos</field>
+      <field name="res_model">gestion_tareas_sergio.proyectos_sergio</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ==================== MENÚS ==================== -->
+    <menuitem name="Gestión Tareas" id="gestion_tareas_sergio_menu_root"/>
+    <menuitem name="Tareas" id="gestion_tareas_sergio_menu_1" parent="gestion_tareas_sergio_menu_root" action="gestion_tareas_sergio_action_window" sequence="30"/>
+    <menuitem name="Sprints" id="gestion_tareas_sergio_menu_sprints" parent="gestion_tareas_sergio_menu_root" action="gestion_tareas_sergio_sprint_action_window" sequence="40"/>
+    <menuitem name="Tecnologías" id="gestion_tareas_sergio_menu_tecnologias" parent="gestion_tareas_sergio_menu_root" action="gestion_tareas_sergio_tecnologia_action_window" sequence="50"/>
+    <menuitem name="Historias" id="gestion_tareas_sergio_menu_historias" parent="gestion_tareas_sergio_menu_root" action="gestion_tareas_sergio_historias_action_window" sequence="20"/>
+    <menuitem name="Proyectos" id="gestion_tareas_sergio_menu_proyectos" parent="gestion_tareas_sergio_menu_root" action="gestion_tareas_sergio_proyectos_action_window" sequence="10"/>
+
   </data>
 </odoo>
