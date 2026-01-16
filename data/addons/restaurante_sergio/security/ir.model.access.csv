@@ -2,3 +2,5 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_platos_sergio,access_platos_sergio,model_restaurante_sergio_platos_sergio,base.group_user,1,1,1,1
 access_platos_sergio_menu_sergio,acceso_menu_sergio,model_restaurante_sergio_menu_sergio,base.group_user,1,1,1,1
 access_platos_sergio_ingredientes_sergio,acceso_ingredientes_sergio,model_restaurante_sergio_ingredientes_sergio,base.group_user,1,1,1,1
+access_platos_sergio_categorias_sergio,acceso_categorias_sergio,model_restaurante_sergio_categorias_sergio,base.group_user,1,1,1,1
+access_platos_sergio_chef_sergio,acceso_chef_sergio,model_restaurante_sergio_chef_sergio,base.group_user,1,1,1,1

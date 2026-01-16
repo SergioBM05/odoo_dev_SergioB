@@ -41,6 +41,11 @@ class historias_sergio(models.Model):
         string="Nombre", 
         required=True, 
         help="Nombre de la historia")
+    
+    tecnologias = fields.Many2many(
+        "gestion_tareas_sergio.tecnologias_sergio", 
+        compute="_compute_tecnologias", 
+        string="Tecnologías Utilizadas")
 
     descripcion = fields.Text(
         string="Descripción", 
@@ -56,6 +61,19 @@ class historias_sergio(models.Model):
         'gestion_tareas_sergio.tareas_sergio', 
         'historia', 
         string='Tareas de la Historia')
+    
+    @api.depends('tareas', 'tareas.rel_tecnologias')
+    def _compute_tecnologias(self):
+        for historia in self:
+            tecnologias_acumuladas = self.env['gestion_tareas_sergio.tecnologias_sergio']
+
+            # Recorrer todas las tareas de la historia
+            for tarea in historia.tareas:
+                # Sumar (concatenar) tecnologías de cada tarea
+                tecnologias_acumuladas = tecnologias_acumuladas + tarea.rel_tecnologias
+
+            # Asignar el resultado
+            historia.tecnologias = tecnologias_acumuladas
 
 
 
@@ -99,6 +117,17 @@ class tareas_sergio(models.Model):
         string='Sprint Activo', 
         compute='_compute_sprint', 
         store=True) 
+    
+    historia = fields.Many2one(
+        'gestion_tareas_sergio.historias_sergio', 
+        string='Historia')
+    
+    proyecto = fields.Many2one(
+        'gestion_tareas_sergio.proyectos_sergio',
+        string='Proyecto',
+        related='historia.proyecto',
+        readonly=True)
+
     
     rel_tecnologias = fields.Many2many(
     comodel_name='gestion_tareas_sergio.tecnologias_sergio',

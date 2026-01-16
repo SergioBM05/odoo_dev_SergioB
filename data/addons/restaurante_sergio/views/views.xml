@@ -7,7 +7,7 @@
       <field name="arch" type="xml">
         <list>
           <field name="name"/>
-          <field name="categoria"/>
+          <field name="categorias"/>
           <field name="precio"/>
           <field name="disponible"/>
           <field name="codigo"/>
@@ -30,7 +30,10 @@
                     <field name="precio"/>
                     <field name="tiempo_preparacion"/>
                     <field name="disponible"/>
-                    <field name="categoria"/>
+                    <field name="categorias"/>
+                    <field name="chef_especializado"/>
+                </group>
+                <group>
                     <field name="menu_id"/>
                     <field name="rel_ingredientes" widget="many2many_tags"/>
                     <field name="codigo"/>
@@ -42,21 +45,45 @@
     </field>
 </record>
 
+<!-- Acciones de ventana -->
+<!-- Acción para platos -->
     <record model="ir.actions.act_window" id="restaurante_sergio.action_platos">
       <field name="name">Gestión de platos</field>
       <field name="res_model">restaurante_sergio.platos_sergio</field>
       <field name="view_mode">list,form</field>
     </record>
-
+<!-- Acción para menús -->
      <record model="ir.actions.act_window" id="restaurante_sergio.action_menus">
       <field name="name">Gestión de menús</field>
       <field name="res_model">restaurante_sergio.menu_sergio</field>
       <field name="view_mode">list,form</field>
     </record>
+<!-- Acción para ingredientes -->
+    <record model="ir.actions.act_window" id="restaurante_sergio.action_ingredientes">
+      <field name="name">Gestión de Ingredientes</field>
+      <field name="res_model">restaurante_sergio.ingredientes_sergio</field>
+      <field name="view_mode">list,form</field>
+    </record>
 
+<!-- Acción para categorías -->
+    <record model="ir.actions.act_window" id="restaurante_sergio.action_categorias">
+          <field name="name">Gestión de Categorías</field>
+          <field name="res_model">restaurante_sergio.categorias_sergio</field>
+          <field name="view_mode">list,form</field>
+    </record>
+
+<!-- Acción para chefs -->
+    <record model="ir.actions.act_window" id="restaurante_sergio.action_chef">
+      <field name="name">Gestión de Chefs</field>
+      <field name="res_model">restaurante_sergio.chef_sergio</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+
+<!-- Menús -->
     <menuitem name="Gestión restaurante" id="restaurante_sergio.menu_root"/>
 
-    
+<!-- Submenú Platos y Menú -->
     <menuitem name="Platos y menú" id="restaurante_sergio.menu"
               parent="restaurante_sergio.menu_root"/>
 
@@ -67,6 +94,19 @@
     <menuitem name="Listado Menús" id="restaurante_sergio.menu_menus"
               parent="restaurante_sergio.menu"
               action="restaurante_sergio.action_menus"/>
+<!-- Submenu ingredientes -->
+    <menuitem name="Listado Ingredientes" id="restaurante_sergio.menu_ingredientes"
+              parent="restaurante_sergio.menu"
+              action="restaurante_sergio.action_ingredientes"/>
 
+<!-- Submenu categorías -->
+    <menuitem name="Listado Categorías" id="restaurante_sergio.menu_categorias"
+                  parent="restaurante_sergio.menu"
+                  action="restaurante_sergio.action_categorias"/>
+
+<!-- Submenu chefs -->
+    <menuitem name="Listado Chefs" id="restaurante_sergio.menu_chefs"
+                  parent="restaurante_sergio.menu"
+                  action="restaurante_sergio.action_chef"/>
   </data>
 </odoo>

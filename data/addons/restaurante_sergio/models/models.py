@@ -54,12 +54,26 @@ class PlatosSergio(models.Model):
         default=True
     )
 
-    categoria = fields.Selection(
-        [('entrante', 'Entrante'),
-         ('principal', 'Principal'),
-         ('postre', 'Postre'),
-         ('bebida', 'Bebida')],
-        string="Categoría"
+    categorias = fields.Many2one(
+        'restaurante_sergio.categorias_sergio',
+        string='Categoría del plato',
+        ondelete='set null'
+    )
+    
+    chef_especializado = fields.Many2one(
+        'restaurante_sergio.chef_sergio',
+        string='Chef asignado',
+        compute='_compute_chef_especializado',
+        store=True,
+        depends=['categorias'],
+        ondelete='set null'
+    )
+
+    especialidad_chef = fields.Many2one(
+        'restaurante_sergio.categorias_sergio',
+        string='Especialidad del Chef',
+        related='chef_especializado.especialidad',
+        readonly=True
     )
 
     menu_id = fields.Many2one(
@@ -81,15 +95,18 @@ class PlatosSergio(models.Model):
     def _get_codigo(self):
         for plato in self:
             try:
-                if not plato.categoria:
+                if not plato.categorias:
                     _logger.warning(f"El plato {plato.name} no tiene categoría asignada.")
                     plato.codigo = f"PLT_{plato.id}"
                 else:
-                    plato.codigo = f"{plato.categoria[:3].upper()}_{plato.id}"
+                    plato.codigo = f"{plato.categorias.name[:3].upper()}_{plato.id}"
                     _logger.debug(f"Código asignado: {plato.codigo}")
             except Exception as e:
                 raise ValidationError(f"Error al generar el código del plato: {str(e)}")
 
+   
+        
+        
 
     def _compute_precio_con_iva(self):
         for plato in self:
@@ -122,6 +139,18 @@ class PlatosSergio(models.Model):
                 plato.precio_final = plato.precio * (1 - descuento / 100)
             else:
                 plato.precio_final = 0.0
+                
+    @api.depends('categorias')
+    def _compute_chef_especializado(self):
+        for plato in self:
+            if plato.categorias:
+                chef = self.env['restaurante_sergio.chef_sergio'].search([('especialidad', '=', plato.categorias.id)], limit=1)
+                if chef:
+                    plato.chef_especializado = chef.id
+                else:
+                    plato.chef_especializado = False
+            else:
+                plato.chef_especializado = False
 
 
 
@@ -189,7 +218,7 @@ class Menu(models.Model):
 
 
 
-
+#MODELO INGREDIENTES **************
 class IngredientesSergio(models.Model):
     _name = 'restaurante_sergio.ingredientes_sergio'
     _description = 'Modelo de Ingredientes para Gestión de Restaurante'
@@ -207,11 +236,82 @@ class IngredientesSergio(models.Model):
     descripcion = fields.Text(
         string="Descripción"
     )
-
+    
+    
     rel_platos = fields.Many2many(
         'restaurante_sergio.platos_sergio',
         relation='relacion_platos_ingredientes',
         column1='rel_ingredientes',
         column2='rel_platos',
         string='Platos'
+    )
+
+
+#MODELO CATEGORIAS ********************************
+class CategoriasSergio(models.Model):
+    _name = "restaurante_sergio.categorias_sergio"
+    _description = "Modelo de Categorías para Gestión de Restaurante"
+    
+    name = fields.Char(
+        string="Nombre de la categoría",
+        required=True
+    )
+    
+    descripcion = fields.Text(
+        string="Descripción"
+    )
+    
+    platos = fields.One2many(
+        'restaurante_sergio.platos_sergio',
+        'categorias',
+        string='Platos en la categoría'
+    )
+    
+    chef = fields.One2many(
+        'restaurante_sergio.chef_sergio',
+        'especialidad',
+        string='Chefs especializados en esta categoría'
+    )
+    
+    ingredientes_comunes = fields.Many2many(
+        'restaurante_sergio.ingredientes_sergio',
+        relation='rel_categorias_ingredientes',
+        column1='categoria_id',
+        column2='ingrediente_id',
+        string='Ingredientes comunes en esta categoría',
+        compute='_compute_ingredientes_comunes',
+        store=True
+    )
+    
+    @api.depends('platos', 'platos.rel_ingredientes')
+    def _compute_ingredientes_comunes(self):
+        for categoria in self:
+            acumulado = self.env['restaurante_sergio.ingredientes_sergio']
+            for plato in categoria.platos:
+                acumulado = acumulado + plato.rel_ingredientes
+            categoria.ingredientes_comunes = acumulado
+    
+    
+    
+    
+#MODELO CHEF ********************************
+class ChefSergio(models.Model):
+    _name="restaurante_sergio.chef_sergio"
+    _description="Modelo de Chefs para Gestión de Restaurante"
+    
+    name=fields.Char(
+        string="Nombre del Chef",
+        required=True
+    )
+    
+    especialidad = fields.Many2one(
+        'restaurante_sergio.categorias_sergio',
+        string='Especialidad del Chef',
+        ondelete='set null'
+    )
+    
+    platos_asignados = fields.One2many(
+        'restaurante_sergio.platos_sergio',
+        'chef_especializado',
+        string='Platos asignados al Chef'
     )
